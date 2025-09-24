@@ -18,7 +18,7 @@ source venv/Scripts/activate
 pip install -r requirements.txt
 ````
 
-run the following commdand for the first time installing dependancies
+SELF NOTE: run the following commdand when adding new libraries
 
 ````bash
 pip freeze > requirements.txt
