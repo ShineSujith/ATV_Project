@@ -1,14 +1,17 @@
-import speech_recogniton as sr
+"""Main application module"""
 
-recognizer = sr.Recoginizer()
+import speech_recognition as sr
 
-def getMicrophoneAudio():
-    with recognizer.Microphone() as source:
+recognizer = sr.Recognizer()
+
+def get_microphone_audio():
+    """Function for converting microphone input to text"""
+    with sr.Microphone() as source:
         audio = recognizer.listen(source, duration=5)
         try:
             text = recognizer.recognize_google(audio)
-        except:
-            print("An Error has occured")
+        except sr.UnknownValueError:
+            print("Failed to recognize audio")
         print(text)
 
-getMicrophoneAudio()
+get_microphone_audio()
