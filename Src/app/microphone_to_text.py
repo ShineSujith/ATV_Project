@@ -5,6 +5,7 @@ import speech_recognition as sr
 def get_microphone_audio(continue_recongition: bool):
     """Function for converting microphone input to text"""
     recognizer = sr.Recognizer()
+    transcript = ""
     while continue_recongition:
         with sr.Microphone() as source:
             recognizer.adjust_for_ambient_noise(source, duration=0.5)
