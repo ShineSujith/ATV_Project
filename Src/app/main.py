@@ -1,37 +1,5 @@
 """Main application module"""
 
-# from microphone_to_text import get_microphone_audio
-# from googleapiclient.discovery import build
-# from google.oauth2 import service_account
-
-# CLIENT_SECRET_FILE = 'client-secret.json'
-# SCOPES = ['https://www.googleapis.com/auth/drive']
-# PARENT_FOLDER_ID = "1n48TDzCwgGn4fik7bcRFruBPzXIYGbzo"
-
-# def authenticate():
-#     creds = service_account.Credentials.from_service_account_file(CLIENT_SECRET_FILE, scopes=SCOPES)
-#     return creds
-
-# def upload_file(file_path):
-#     creds = authenticate()
-#     service = build('drive', 'v3', credentials=creds)
-
-#     file_metadata = {
-#         'name': 'ReadFile.txt',
-#         'parents': [PARENT_FOLDER_ID]
-#     }
-
-#     file = service.files().create(
-#         body=file_metadata,
-#         media_body=file_path
-#     ).execute()
-#     print(file)
-
-# upload_file("ReadFile.txt")
-
-# if __name__ == "__main__":
-    # get_microphone_audio(True)
-
 import os.path
 
 from google.auth.transport.requests import Request
@@ -39,13 +7,13 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from microphone_to_text import get_microphone_audio
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 PARENT_FOLDER_ID = "1n48TDzCwgGn4fik7bcRFruBPzXIYGbzo"
 
-
-def main(file_path):
+def authenticate():
     """Shows basic usage of the Drive v3 API.
     Prints the names and ids of the first 10 files the user has access to.
     """
@@ -67,7 +35,10 @@ def main(file_path):
         # Save the credentials for the next run
         with open("token.json", "w") as token:
             token.write(creds.to_json())
+    return creds
 
+def main():
+    creds = authenticate()
     try:
         service = build("drive", "v3", credentials=creds)
 
@@ -79,11 +50,13 @@ def main(file_path):
         #     'parents': [PARENT_FOLDER_ID]
         # }
 
+        get_microphone_audio(True)
+
         # Call the Drive v3 API
         results = (
             service.files().update(
                 fileId=file_id,
-                media_body=file_path
+                media_body="ReadFile.txt"
             ).execute()
         )
 
@@ -91,4 +64,5 @@ def main(file_path):
     except HttpError as error:
         print(f"An error occurred: {error}")
 
-main("ReadFile.txt")
+if __name__ == "__main__":
+    main()
