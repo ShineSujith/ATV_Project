@@ -12,7 +12,8 @@ def get_microphone_audio(continue_recongition: bool):
             audio = recognizer.listen(source)
             try:
                 text = recognizer.recognize_google(audio)
-                print(text)
+                with open("ReadFile.txt", "w") as f:
+                    f.write(text)
                 transcript = f"{transcript} {text}"
                 user_input = input("Continue Transcribing (y/n)").lower()
                 if user_input == "n":
