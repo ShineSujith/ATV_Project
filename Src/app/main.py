@@ -12,12 +12,14 @@ from microphone_to_text import get_microphone_audio
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 PARENT_FOLDER_ID = "1n48TDzCwgGn4fik7bcRFruBPzXIYGbzo"
+test_flag = True
 
 def authenticate():
     """Shows basic usage of the Drive v3 API.
     Prints the names and ids of the first 10 files the user has access to.
     """
     creds = None
+    # flow = InstalledAppFlow
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
@@ -29,18 +31,18 @@ def authenticate():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-            "credentials.json", SCOPES
-        )
-        creds = flow.run_local_server(port=0)
+                "credentials.json", SCOPES
+            )
+            creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open("token.json", "w") as token:
             token.write(creds.to_json())
     return creds
 
 def main():
-    creds = authenticate()
+    credentials = authenticate()
     try:
-        service = build("drive", "v3", credentials=creds)
+        service = build("drive", "v3", credentials=credentials)
 
         file_id = '1Whi9DW5GSOxNNc1ts1negwxyniVXjTDi'
 
@@ -50,7 +52,8 @@ def main():
         #     'parents': [PARENT_FOLDER_ID]
         # }
 
-        get_microphone_audio(True)
+        if test_flag == False:
+            get_microphone_audio(True)
 
         # Call the Drive v3 API
         results = (
