@@ -17,6 +17,7 @@ def get_microphone_audio(continue_recongition: bool):
                 transcript = f"{transcript} {text}"
                 user_input = input("Continue Transcribing (y/n)").lower()
                 if user_input == "n":
+                    f.write("n")
                     continue_recongition = False
             except sr.UnknownValueError:
                 print("Failed to recognize audio")
