@@ -8,11 +8,13 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from microphone_to_text import get_microphone_audio
+from microphone_to_text import audio_file_to_text
+from microphone_to_text import record_audio
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/drive"]
 PARENT_FOLDER_ID = "1n48TDzCwgGn4fik7bcRFruBPzXIYGbzo"
-test_flag = True
+test_flag = False
 
 def authenticate():
     """Shows basic usage of the Drive v3 API.
@@ -40,11 +42,11 @@ def authenticate():
     return creds
 
 def main():
-    credentials = authenticate()
-    try:
-        service = build("drive", "v3", credentials=credentials)
+    # credentials = authenticate()
+    # try:
+        # service = build("drive", "v3", credentials=credentials)
 
-        file_id = '1Whi9DW5GSOxNNc1ts1negwxyniVXjTDi'
+        # file_id = '1Whi9DW5GSOxNNc1ts1negwxyniVXjTDi'
 
         # Used for adding a new file
         # file_metadata = {
@@ -53,19 +55,36 @@ def main():
         # }
 
         if test_flag == False:
-            get_microphone_audio(True)
+            while True:
+                mode = int(input("1 for device audio 2 for microphone audio:"))
+                if (mode == 1):
+                    record_audio()
+                    audio_file_to_text()
+                else:
+                    get_microphone_audio()
+            # results = (
+            #     service.files().update(
+            #         fileId=file_id,
+            #         media_body="ReadFile.txt"
+            #     ).execute()
+            # )
+                user_input = input("Continue Transcribing (y/n)").lower()
+                if user_input == "n":
+                    with open("ReadFile.txt", "w") as f:
+                        f.write("n")
+                    break
 
         # Call the Drive v3 API
-        results = (
-            service.files().update(
-                fileId=file_id,
-                media_body="ReadFile.txt"
-            ).execute()
-        )
+        # results = (
+        #     service.files().update(
+        #         fileId=file_id,
+        #         media_body="ReadFile.txt"
+        #     ).execute()
+        # )
 
-        print(results)
-    except HttpError as error:
-        print(f"An error occurred: {error}")
+        # print(results)
+    # except HttpError as error:
+    #     print(f"An error occurred: {error}")
 
 if __name__ == "__main__":
     main()
