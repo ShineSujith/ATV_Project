@@ -2,24 +2,27 @@
 
 ## Setting up a python virtual environment
 
-````bash
+```bash
 python -m venv venv
-````
+```
 
 Activate using:
 
-````bash
+```bash
 source venv/Scripts/activate
-````
+```
 
 ## Installing dependancies
 
-````bash
+```bash
 pip install -r requirements.txt
-````
+```
 
 SELF NOTE: run the following commdand when adding new libraries
 
-````bash
+```bash
 pip freeze > requirements.txt
-````
+```
+
+set -a && source .env && set +a
+python -m uvicorn Src.app.microphoneService:app --host localhost --port 8001 --reload
