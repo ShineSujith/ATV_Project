@@ -4,10 +4,11 @@ from .models import TextInput
 import json
 import aio_pika
 import os
+import asyncio
 import speech_recognition as sr
 import threading
 
-listening = False
+stop_event = threading.Event()
 thread = None
 
 recognizer = sr.Recognizer()
@@ -47,20 +48,20 @@ async def publish_text(text):
     await conn.close()
     return {"status": "sent"}
 
-def listen_loop():
+def listen_loop(loop):
     with sr.Microphone() as source:
         recognizer.adjust_for_ambient_noise(source)
 
         print("Listening...")
 
-        while listening:
+        while not stop_event.is_set():
             try:
-                audio = recognizer.listen(source)
+                audio = recognizer.listen(source, timeout=1, phrase_time_limit=5)
 
                 text = recognizer.recognize_google(audio)
                 print("TEXT:", text)
 
-                publish_text(text)
+                asyncio.run_coroutine_threadsafe(publish_text(text), loop)
 
             except sr.UnknownValueError:
                 print("Could not understand audio")
@@ -69,17 +70,26 @@ def listen_loop():
                 print("Error:", e)
 
 @app.post("/api/start")
-def start():
-    global listening, thread
-    if not listening:
-        listening = True
-        thread = threading.Thread(target=listen_loop)
+async def start():
+    global thread
+    print("Start hit")
+    if thread is None or not thread.is_alive():
+        stop_event.clear()
+        loop = asyncio.get_event_loop()
+        thread = threading.Thread(target=listen_loop, args=(loop,), daemon=True)
         thread.start()
+
     return {"status": "started"}
 
-
 @app.post("/api/stop")
-def stop():
-    global listening
-    listening = False
+async def stop():
+    stop_event.set()
+
+    if thread:
+        thread.join(timeout=2)
+
     return {"status": "stopped"}
+
+@app.post("/api/sendTextInput")
+async def send_text_input(payload: TextInput):
+    await publish_text(payload.payload)
