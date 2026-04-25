@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from src.app.microphone_service import app, stop_event
+from src.app.microphone_service import app
 from unittest.mock import AsyncMock, patch
 import pytest
 
