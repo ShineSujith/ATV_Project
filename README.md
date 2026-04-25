@@ -25,4 +25,4 @@ pip freeze > requirements.txt
 ```
 
 set -a && source .env && set +a
-python -m uvicorn Src.app.microphoneService:app --host localhost --port 8001 --reload
+python -m uvicorn src.app.microphone_service:app --host localhost --port 8001 --reload
