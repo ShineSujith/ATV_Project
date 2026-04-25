@@ -28,4 +28,4 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Run tests with coverage and enforce threshold
         run: |
-          pytest --cov=src/app/microphone_service --cov-fail-under=80 --cov-report=term-missing
+          pytest --cov=Src/app/microphoneService --cov-fail-under=80 --cov-report=term-missing
